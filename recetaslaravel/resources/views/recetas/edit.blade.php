@@ -84,7 +84,7 @@
                     <input 
                     type="file" 
                     id="imagen" 
-                    class="form-control @error('ingredientes') is-invalid @enderror" 
+                    class="form-control @error('imagen') is-invalid @enderror" 
                     name="imagen"> 
                     <div class="mt-4">
                         <p>Imagen Actual:</p>
@@ -105,5 +105,5 @@
 
 @endsection
 @section('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/trix/1.3.1/trix.js" integrity="sha512-/1nVu72YEESEbcmhE/EvjH/RxTg62EKvYWLG3NdeZibTCuEtW5M4z3aypcvsoZw03FAopi94y04GhuqRU9p+CQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/trix/1.3.1/trix.js" integrity="sha512-/1nVu72YEESEbcmhE/EvjH/RxTg62EKvYWLG3NdeZibTCuEtW5M4z3aypcvsoZw03FAopi94y04GhuqRU9p+CQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 @endsection

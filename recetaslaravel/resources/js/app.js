@@ -3,6 +3,8 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
+// import { mix } from 'laravel-mix/src/File';
+import 'owl.carousel';
 import Vue from 'vue';
 import VueSweetalert2 from 'vue-sweetalert2';
 
@@ -28,7 +30,7 @@ Vue.use(VueSweetalert2);
 Vue.config.ignoredElements = ['trix-editor','trix-toolbar'];
 Vue.component('fecha-receta',require('./components/FechaReceta.vue').default);
 Vue.component('eliminar-receta',require('./components/EliminarReceta.vue').default);
-
+Vue.component('like-button',require('./components/LikeButton.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -38,4 +40,27 @@ Vue.component('eliminar-receta',require('./components/EliminarReceta.vue').defau
 
 const app = new Vue({
     el: '#app',
+});
+
+// corousel con OWL
+
+jQuery(document).ready(function(){
+    jQuery('.owl-carousel').owlCarousel({
+        margin:10,
+        loop:true,
+        autoplay:true,
+        autoplayHoverPause:true,
+        responsive: {
+            0 : {
+                items: 1
+            },
+            600:{
+                items: 2
+            },
+            1000:{
+                items: 3
+            }
+        }
+        //items para ver cuantos se mostraran en el carousel
+    });
 });

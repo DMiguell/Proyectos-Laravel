@@ -15,7 +15,7 @@ class RecetaController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth',['except'=> 'show']); //middleware para proteger las rutas
+        $this->middleware('auth',['except'=> ['show','search']]); //middleware para proteger las rutas
     }
     /**
      * Display a listing of the resource.
@@ -26,8 +26,23 @@ class RecetaController extends Controller
     {
         //Auth::user()->recetas->dd();
         // auth()->user()->recetas->dd();// Otra forma de hacerlo 
-        $recetas = auth()->user()->recetas;
-        return view('recetas.index')->with('recetas',$recetas);
+
+        //$recetas = auth()->user()->recetas;
+       
+       
+        $usuario = auth()->user(); 
+
+        //$meGusta = auth()->user()->meGusta;
+
+        // Receta con paginacion(para hacer esto se utiliza el modelo)
+
+        $recetas = Receta::where('user_id',$usuario->id)->paginate(10);
+
+        //$usuario = auth()->user(); nos evitamos esto al poner el auth en el index
+        return view('recetas.index')
+        ->with('recetas',$recetas)
+        ->with('usuario',$usuario);
+        //->with('usuario',$usuario);
     }
 
     /**
@@ -106,10 +121,20 @@ class RecetaController extends Controller
      */
     public function show(Receta $receta)
     {
+
+        // Obtner si el usuario actual le gusta la receta
+
+        $like = (auth()->user()) ? auth()->user()->meGusta->contains($receta->id) : false;
+
+        // Pasa la cantidad de likes a la vista
+        $likes = $receta->likes->count();
+
+        
         // Algunos metodo para obtener una receta
 
         //$receta = Receta::findOrFail($receta); // En caso de que no exista una receta nos marca un error (Recuerda que hay que elimar la paralabra Receta), este es un metodo antiguo.
-        return view('recetas.show')->with('receta',$receta);
+        return view('recetas.show', compact('receta','like','likes'));
+        // return view('recetas.show')->with('receta',$receta)->with('like',$like)->with('likes',$likes);
     }
 
     /**
@@ -120,6 +145,9 @@ class RecetaController extends Controller
      */
     public function edit(Receta $receta)
     {
+
+        $this->authorize('view',$receta);
+        
         $categorias = CategoriaReceta::all(['id','nombre']);
         return view('recetas.edit')
         ->with('categorias',$categorias)
@@ -189,5 +217,13 @@ class RecetaController extends Controller
         $receta->delete();
 
         return redirect()->action([RecetaController::class,'index']);
+    }
+    public function search(Request $request){
+        $busqueda = $request['buscar'];
+        // $busqueda = $request->get('buscar');// Otro metodo
+
+        $recetas = Receta::where('titulo','like','%'. $busqueda . '%')->paginate(2);
+        $recetas->appends(['buscar' =>$busqueda]);
+        return view('busquedas.show',compact('recetas','busqueda'));
     }
 }

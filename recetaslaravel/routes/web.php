@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\CategoriasController;
+use App\Http\Controllers\InicioController;
+use App\Http\Controllers\LikesController;
+use App\Http\Controllers\PerfilController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecetaController;
@@ -15,9 +19,7 @@ use App\Http\Controllers\RecetaController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [InicioController::class,'index'])->name('inicio.index');
 Route::get('/recetas', [RecetaController::class,'index'])->name('recetas.index');
 
 Route::get('/recetas/create', [RecetaController::class,'create'])->name('recetas.create');
@@ -32,7 +34,19 @@ Route::put('/recetas/{receta}', [RecetaController::class,'update'])->name('recet
 
 Route::delete('/recetas/{receta}', [RecetaController::class,'destroy'])->name('recetas.destroy');
 
-Auth::routes();
+Route::get('/categoria/{categoriaReceta}',[CategoriasController::class,'show'])->name('categorias.show');
+
+// Buscador de Recetas
+Route::get('/buscar',[RecetaController::class,'search'])->name('buscar.show');
+// Route::resource('recetas', RecetaController::class);// Esto resume todo lo de arriba
+
+Route::get('/perfiles/{perfil}', [PerfilController::class,'show'])->name('perfiles.show');
+Route::get('/perfiles/{perfil}/edit', [PerfilController::class,'edit'])->name('perfiles.edit');
+Route::put('/perfiles/{perfil}', [PerfilController::class,'update'])->name('perfiles.update');
+
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+// Almacena los likes de las recetas
+Route::post('/recetas/{receta}', [LikesController::class,'update'])->name('likes.update');
+Auth::routes();
